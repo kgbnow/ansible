@@ -1,0 +1,81 @@
+---
+- name: Установка Apache, Git, Docker, Jenkins и Terraform
+  hosts: VM_2
+  ignore_errors: true
+  become: true
+  tasks:
+    - name: Установка Apache
+      apt:
+        name: apache2
+        state: present
+    - name: Установка Git
+      apt:
+        name: git
+        state: present
+    - name: Установка Docker зависимостей
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+    - name: Добавление ключа Docker GPG
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Добавление репозитория Docker
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+    - name: Установка Docker
+      apt:
+        name: docker-ce
+        state: present
+    - name: Установка Java
+      apt:
+        name: openjdk-11-jdk
+        state: present
+    - name: Добавление ключа Jenkins
+      apt_key:
+        url: https://pkg.jenkins.io/debian/jenkins.io-2023.key
+        state: present
+
+    - name: Добавление репозитория Jenkins
+      apt_repository:
+        repo: deb http://pkg.jenkins.io/debian-stable binary/
+        state: present
+
+    - name: Установка Jenkins
+      apt:
+        name: jenkins
+        state: present
+    - name: Установка Terraform
+      apt:
+        name: unzip
+        state: present
+    - name: Загрузка Terraform
+      get_url:
+        url: https://releases.hashicorp.com/terraform/0.15.4/terraform_0.15.4_linux_amd64.zip
+        dest: /tmp/terraform.zip
+    - name: Распаковка Terraform
+      unarchive:
+        src: /tmp/terraform.zip
+        dest: /usr/local/bin/
+        remote_src: yes
+        mode: "0755"
+    - name: Запуск сервиса Apache
+      systemd:
+        name: apache2
+        state: started
+        enabled: true
+    - name: Запуск сервиса Docker
+      systemd:
+        name: docker
+        state: started
+        enabled: true
+    - name: Запуск сервиса Jenkins
+      systemd:
+        name: jenkins
+        state: started
+        enabled: true
