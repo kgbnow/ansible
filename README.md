@@ -1,2 +1,2 @@
 # ansible
-Comfigurating by Ansible Task
+Configurating by Ansible
