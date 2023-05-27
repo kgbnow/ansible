@@ -1,7 +1,7 @@
 [VM_1]
 localhost
 [VM_2]
-44.202.55.41
+54.166.151.9
 [TWO_VMS:children]
 VM_1
 VM_2

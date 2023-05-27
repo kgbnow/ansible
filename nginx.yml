@@ -1,0 +1,4 @@
+- hosts: VM_2
+  become: true
+  roles:
+    - { role: geerlingguy.nginx }
